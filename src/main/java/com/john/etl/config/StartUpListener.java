@@ -1,6 +1,9 @@
 package com.john.etl.config;
 
 
+import com.john.etl.unit.EntityEtlUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -11,10 +14,24 @@ import org.springframework.context.event.ContextRefreshedEvent;
  */
 public class StartUpListener implements ApplicationListener<ContextRefreshedEvent> {
 
+    private Logger logger = LoggerFactory.getLogger(StartUpListener.class);
+    private ApplicationContext applicationContext = null;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        ApplicationContext ac = event.getApplicationContext();
+        applicationContext = event.getApplicationContext();
+        initEtlHandler();
+    }
+
+    public void initEtlHandler(){
+        String[] EtlBean = applicationContext.getBeanNamesForType(EntityEtlUnit.class);
+    }
+
+    private boolean isHandler(Class beanType){
+        return false;
+    }
+
+    private void detectHandlerMethods(){
 
     }
 }
