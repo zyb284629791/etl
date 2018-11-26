@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 清洗任务表 服务实现类
  * </p>
  *
- * @author Windows 10
+ * @author Mac OS X
  * @since 2018-11-26
  */
 @Service

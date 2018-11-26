@@ -1,6 +1,8 @@
 package com.john.etl.mission.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
@@ -13,7 +15,7 @@ import lombok.experimental.Accessors;
  * 清洗任务表
  * </p>
  *
- * @author Windows 10
+ * @author Mac OS X
  * @since 2018-11-26
  */
 @Data
@@ -23,6 +25,12 @@ import lombok.experimental.Accessors;
 public class EtlMission implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * ID
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     /**
      * 资源ID
@@ -39,8 +47,11 @@ public class EtlMission implements Serializable {
      */
     private LocalDateTime createTime;
 
+    /**
+     * 删除标识， 0: 未删除 1: 已删除
+     */
     @TableLogic
-    private Boolean deleteFlag;
+    private Integer deleteFlag;
 
     /**
      * 清洗类型，1: insert 2: update 3: delete

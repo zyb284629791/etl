@@ -1,15 +1,15 @@
 package com.john.etl.unit;
 
 import com.john.etl.mission.entity.EtlMission;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 数据清洗器抽象类
  * Created by wangping on 2016/10/10.
  */
 public abstract class EntityEtlUnit {
-    protected Log log = LogFactory.getLog(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 执行清洗
@@ -24,14 +24,14 @@ public abstract class EntityEtlUnit {
                 return deleteFromOfficial(mission);//从正式库删除
             }else{
                 mission.setOperStatus(6);
-                log.info("--------清洗任务不成功，canDeleteFromOfficial方法校验未通过。\n" + mission);
+                logger.info("--------清洗任务不成功，canDeleteFromOfficial方法校验未通过。\n" + mission);
             }
         }else if (mission.getOperType() == 1 || mission.getOperType() == 2){//新增或修改操作
             if (hasFullDataInMid(mission)){//在中间库具有完整数据时
                 if (hasOfficialData(mission)){
                     boolean result = updateToOfficial(mission);
                     if (!result){
-                        log.info("--------清洗任务不成功，updateToOfficial方法执行失败。\n" + mission);
+                        logger.info("--------清洗任务不成功，updateToOfficial方法执行失败。\n" + mission);
                         //将status设置成为实际的操作类型，方便后续排查bug时定位
                         mission.setOperStatus(5);
                     }
@@ -39,14 +39,14 @@ public abstract class EntityEtlUnit {
                 }else{
                     boolean result = insertToOfficial(mission);
                     if (!result){
-                        log.info("--------清洗任务不成功，insertToOfficial方法执行失败。\n" + mission);
+                        logger.info("--------清洗任务不成功，insertToOfficial方法执行失败。\n" + mission);
                         //将status设置成为实际的操作类型，方便后续排查bug时定位
                         mission.setOperStatus(4);
                     }
                     return result;
                 }
             }else{
-                log.info("--------清洗任务不成功，hasFullDataInMid方法校验未通过。\n" + mission);
+                logger.info("--------清洗任务不成功，hasFullDataInMid方法校验未通过。\n" + mission);
                 mission.setOperStatus(3);
             }
         }else{

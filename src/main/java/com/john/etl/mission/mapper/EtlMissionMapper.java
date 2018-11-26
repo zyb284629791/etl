@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * 清洗任务表 Mapper 接口
  * </p>
  *
- * @author Windows 10
+ * @author Mac OS X
  * @since 2018-11-26
  */
 public interface EtlMissionMapper extends BaseMapper<EtlMission> {
