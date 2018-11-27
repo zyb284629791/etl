@@ -1,10 +1,18 @@
 # spring boot
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/etl_mid
-    username: root
-    password: root#root
+    type: com.alibaba.druid.pool.DruidDataSource
+    mid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/etl_mid
+      username: root
+      password: root#root
+    offical:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/etl_official
+        username: root
+        password: root#root
+
 
 # mybatis-plus
 mybatis-plus:
@@ -37,5 +45,6 @@ etl:
   method:
     # multipart 多线程 single 单线程
     0
-  loadUnfinished:true
+  loadUnfinished: true
   loadUnfinishedTableName:
+  loadUnfinishedPosition:

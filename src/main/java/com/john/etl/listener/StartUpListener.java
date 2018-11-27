@@ -1,8 +1,10 @@
 package com.john.etl.listener;
 
 
+import com.john.etl.properties.EtlConfigProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -20,9 +22,13 @@ public class StartUpListener implements ApplicationListener<ContextRefreshedEven
     private Logger logger = LoggerFactory.getLogger(StartUpListener.class);
     private ApplicationContext applicationContext = null;
 
+    @Autowired
+    private EtlConfigProperties configuration;
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         applicationContext = event.getApplicationContext();
+        System.out.println(configuration);
     }
 
 

@@ -1,5 +1,6 @@
 package com.john.etl.util;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import org.junit.Test;
 
 /**
@@ -10,6 +11,12 @@ public class MybatisPlusUtilTest {
 
     @Test
     public void generator() {
-        MabatisGeneratorUtil.generator("mission", "t_etl_mission", "com.john.etl", "t_");
+
+        MabatisGeneratorUtil.initBasePackageAndDataSourceAndIdType("com.john.etl.mid","", IdType.ID_WORKER);
+
+        MabatisGeneratorUtil.generator("instance", "t_int_nodes", "MidNodes", "t_");
+
+
+//         MabatisGeneratorUtil.generator("instance", "t_int_nodes", "MidNodes", "t_");
     }
 }

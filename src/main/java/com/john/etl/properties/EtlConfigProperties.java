@@ -1,10 +1,13 @@
-package com.john.etl.config;
+package com.john.etl.properties;
 
 import lombok.Data;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -14,15 +17,49 @@ import java.util.List;
  * @Version：1.0
  */
 @ConfigurationProperties(prefix = "etl")
+@Component
 @Data
-public class EtlAutoConfiguration {
+@ToString
+public class EtlConfigProperties {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private EtlMethod method = EtlMethod.single;
 
+    /**
+     * 是否在启动时加载未清洗完成数据
+     */
     private boolean loadUnfinished;
+
+    /**
+     * 启动时根据表名加载mission
+     */
     private List<String> loadUnfinishedTableName;
+
+    /**
+     * 启动时根据地区标识加载mission
+     */
+    private List<String> loadUnfinishedPosition;
+
+    /**
+     * 启动时根据表名过滤mission
+     */
+    private List<String> loadUnfinishedExcludeTableName;
+
+    /**
+     * 启动时根据地区标识过滤mission
+     */
+    private List<String> loadUnfinishedExcludePosition;
+
+    /**
+     * 中间库数据源
+     */
+    private DataSource mid;
+
+    /**
+     * 正式库数据源
+     */
+    private DataSource official;
 }
 
 /**
