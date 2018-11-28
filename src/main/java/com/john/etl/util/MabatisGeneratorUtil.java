@@ -8,11 +8,10 @@ import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.john.etl.unit.EtlException;
+import com.john.etl.units.EtlException;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MabatisGeneratorUtil {
@@ -54,9 +53,12 @@ public class MabatisGeneratorUtil {
      */
     public static void generator(String moduleName, String tableName, String entityName, String tablePrefix) {
 
+        mpg.setConfig(null);
         // init globalConfig
         GlobalConfig globalConfig = initGloboConfig();
-        globalConfig.setEntityName(entityName);
+        if (!StringUtils.isEmpty(entityName)) {
+            globalConfig.setEntityName(entityName);
+        }
         mpg.setGlobalConfig(globalConfig);
 
         if (!StringUtils.isEmpty(moduleName)) {
