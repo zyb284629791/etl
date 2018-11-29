@@ -16,30 +16,48 @@ import java.util.List;
  * @Date: 2018/11/26.22:42
  * @Version：1.0
  */
-@ConfigurationProperties(prefix = "etl")
 @Component
 @Data
 @ToString
+@ConfigurationProperties(prefix = "etl")
 public class EtlConfigProperties {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * 清洗器执行方式：multipart 多线程 single 单线程
+     */
     private EtlMethod method = EtlMethod.single;
+
+    /**
+     * 中间库数据源
+     */
+    private DataSource mid;
+
+    /**
+     * 正式库数据源
+     */
+    private DataSource official;
 
     /**
      * 是否在启动时加载未清洗完成数据
      */
-    private boolean loadUnfinished;
+    private boolean isLoadUnfinished;
 
     /**
      * 启动时根据表名加载mission
      */
-    private List<String> loadUnfinishedTableName;
+    private List<String> loadUnfinishedByTableName;
 
     /**
      * 启动时根据地区标识加载mission
      */
-    private List<String> loadUnfinishedPosition;
+    private List<String> loadUnfinishedByPosition;
+
+    /**
+     * 启动是根据执行ID加载mission
+     */
+    private List<String> loadUnfinishedById;
 
     /**
      * 启动时根据表名过滤mission
@@ -52,14 +70,10 @@ public class EtlConfigProperties {
     private List<String> loadUnfinishedExcludePosition;
 
     /**
-     * 中间库数据源
+     * Kafka中监听的topic
      */
-    private DataSource mid;
+    private List<String> kafkaTopics;
 
-    /**
-     * 正式库数据源
-     */
-    private DataSource official;
 }
 
 /**

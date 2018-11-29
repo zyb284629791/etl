@@ -1,6 +1,25 @@
 # spring boot
 # spring boot 2.0开始不支持继承配置，两个数据源要分开配置
 spring:
+  # kafka
+  kafka:
+    bootstrap-servers: 172.16.80.128:9092
+    consumer:
+      # groupId可以随便写
+      group-id: testGroup
+      auto-commit-interval: 100
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      key-deserializer: org.apache.kafka.common.serialization.StringSerializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    producer:
+      batch-size: 16384
+      # 缓存容量
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  # 数据源
   datasource:
     druid:
       mid:
@@ -92,9 +111,6 @@ spring:
 
 # etl
 etl:
-  method:
-    # multipart 多线程 single 单线程
-    multipart
-  loadUnfinished: true
-  loadUnfinishedTableName:
-  loadUnfinishedPosition:
+  method: multipart
+  isLoadUnfinished: true
+  kafkaTopics: test
