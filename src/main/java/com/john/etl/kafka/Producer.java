@@ -22,13 +22,13 @@ public class Producer {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Resource
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private KafkaTemplate<String, EtlMission> kafkaTemplate;
 
     @Autowired
     private IEtlMissionService etlMissionService;
 
     public void produce(String topic,Integer missionId){
-        EtlMission etlMission = etlMissionService.getById(1);
+        EtlMission etlMission = etlMissionService.getById(missionId);
         logger.info("############");
         logger.info("当前mission的ID是%s",etlMission.getId());
         kafkaTemplate.send(topic, etlMission);

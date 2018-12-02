@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -70,9 +71,9 @@ public class EtlConfigProperties {
     private List<String> loadUnfinishedExcludePosition;
 
     /**
-     * Kafka中监听的topic
+     * Kafka相关配置
      */
-    private List<String> kafkaTopics;
+    private KafkaProperties kafkaProperties;
 
 }
 

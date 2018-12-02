@@ -1,24 +1,21 @@
 package com.john.etl.kafka;
 
 import com.john.etl.mid.mission.entity.EtlMission;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 /**
- * @Description Kafka消费者
+ * @Description 另一个消费者
  * @Author: Yb.Z
- * @Date: 2018/11/29.21:01
+ * @Date: 2018/12/2.16:37
  * @Version：1.0
  */
 @Component
-public class Consumer {
+public class AnotherConsumer {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @KafkaListener(topics = "${etl.kafkaProperties.template.defaultTopic}")
     public void consume(EtlMission etlMission){
-        logger.info("消费到消息：" + etlMission.toString());
+        System.err.format("另一个消费者，%s", etlMission);
     }
 }

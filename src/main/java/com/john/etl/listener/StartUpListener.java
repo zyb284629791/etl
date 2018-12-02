@@ -37,12 +37,9 @@ public class StartUpListener implements ApplicationListener<ContextRefreshedEven
 
         // start kafka listener, consume message
         Producer producer = applicationContext.getBean("producer", Producer.class);
-        List<String> kafkaTopics = etlConfigProperties.getKafkaTopics();
-        if (CollectionUtils.isEmpty(kafkaTopics)) {
-            throw new EtlException("Kafka topic must be not null.");
-        }
+        String defaultTopic = etlConfigProperties.getKafkaProperties().getTemplate().getDefaultTopic();
         // 目前暂时设置获取第一个topic
-        producer.produce(kafkaTopics.get(0),1);
+        producer.produce(defaultTopic,1);
     }
 
 
