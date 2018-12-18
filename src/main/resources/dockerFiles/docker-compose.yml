@@ -3,13 +3,13 @@ services:
     zk_server:
         image: zookeeper
         restart: always
-    kafka_server: 
+    kafka_server:
         image: kafka2.11:latest
         ports:
           - "9092:9092"
-        environment: 
+        environment:
           BROKER_ID: 1
-        links: 
+        links:
           - zk_server:zkhost
         restart: always
         command: bin/kafka-server-start.sh config/server.properties

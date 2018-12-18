@@ -1,9 +1,7 @@
 package com.john.etl.listener;
 
 
-import com.john.etl.kafka.Producer;
 import com.john.etl.properties.EtlConfigProperties;
-import com.john.etl.units.EtlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +9,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
 
 /**
- * @Description 监听容器启动，启动Kafka消费线程
+ * @Description 监听容器启动
  * @Author: Yb.Z
  * @Date: 2018/11/26.22:34
  * @Version：1.0
@@ -30,16 +25,16 @@ public class StartUpListener implements ApplicationListener<ContextRefreshedEven
     @Autowired
     private EtlConfigProperties etlConfigProperties;
 
+    /**
+     * 1、容器启动后获取所有etlunit，通过tablename来映射一个map。
+     * 2、在mission消费的时候通过tablename字段匹配etlunit
+     * 3、将mission封装后加如线程池
+     * @param event
+     */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         applicationContext = event.getApplicationContext();
-        // init units map
 
-        // start kafka listener, consume message
-        Producer producer = applicationContext.getBean("producer", Producer.class);
-        String defaultTopic = etlConfigProperties.getKafkaProperties().getTemplate().getDefaultTopic();
-        // 目前暂时设置获取第一个topic
-        producer.produce(defaultTopic,1);
     }
 
 

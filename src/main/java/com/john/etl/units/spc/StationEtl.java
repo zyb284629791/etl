@@ -10,7 +10,7 @@ import com.john.etl.units.EtlUnit;
  * @Date: 2018/11/26.22:34
  * @Version：1.0
  */
-@EtlUnit(tableName = "t_spc_station")
+@EtlUnit("t_spc_station")
 public class StationEtl extends EntityEtlUnit {
 
 

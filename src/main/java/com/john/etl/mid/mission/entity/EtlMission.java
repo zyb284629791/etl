@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
+
+import com.john.etl.constant.EtlOperStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -61,7 +63,7 @@ public class EtlMission implements Serializable {
     /**
      * 清洗状态，0:成功 1:忽略 2: 中间库完整性校验失败 3: 正式库校验失败 4: 插入异常 5: 更新异常 6: 删除异常
      */
-    private Integer operStatus;
+    private EtlOperStatus operStatus;
 
     /**
      * 清洗次数

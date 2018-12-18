@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  * @Version：1.0
  */
 @Component
-public class Producer {
+public class KafkaProducer {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -34,8 +34,9 @@ public class Producer {
         kafkaTemplate.send(topic, etlMission);
     }
 
-    private void produce(String topic, EtlMission mission){
+    public void produce(String topic, EtlMission mission){
         kafkaTemplate.send(topic, mission);
     }
+
 
 }

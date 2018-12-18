@@ -28,8 +28,8 @@ import java.util.Map;
  * @Date: 2018/11/30.21:13
  * @Version：1.0
  */
-@Configuration
-@EnableKafka
+//@Configuration
+//@EnableKafka
 public class KafkaConsumerConfiguration {
 
     @Autowired
