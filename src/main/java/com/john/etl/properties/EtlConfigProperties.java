@@ -1,6 +1,6 @@
 package com.john.etl.properties;
 
-import com.john.etl.constant.EtlMethod;
+import com.john.etl.enums.EtlMethod;
 import lombok.Data;
 import lombok.ToString;
 import org.slf4j.Logger;
@@ -9,8 +9,10 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
 import java.util.List;
+
+
+import javax.sql.DataSource;
 
 /**
  * @Description 清洗器自动配置
@@ -45,6 +47,11 @@ public class EtlConfigProperties {
      * 是否在启动时加载未清洗完成数据
      */
     private boolean isLoadUnfinished;
+
+    /**
+     * 清洗失败达到抛弃mission的次数
+     */
+    private long abandonTimes;
 
     /**
      * 启动时根据表名加载mission

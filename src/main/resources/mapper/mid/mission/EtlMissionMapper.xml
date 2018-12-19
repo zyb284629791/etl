@@ -2,4 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.john.etl.mid.mission.mapper.EtlMissionMapper">
 
+    <sql id="updateSegment">
+        update t_etl_mission t set
+          t.update_time = now(),t.oper_status = #{etlMission.operStatus},t.oper_times = #{etlMission.operTimes }
+    </sql>
+
+    <update id="etlSuccess" parameterType="EtlMission">
+        <include refid="updateSegment"></include>
+        t.note = null,t.delete_flag = 1
+      where t.id = #{etlMission.id}
+    </update>
+
+
+    <update id="etlIgnore" parameterType="EtlMission">
+        <include refid="updateSegment"></include>
+        t.delete_flag = 1,t.note = #{etlMission.note}
+        where t.id = #{etlMission.id}
+    </update>
+
+
+    <update id="etlFail" parameterType="EtlMission">
+        <include refid="updateSegment"></include>
+        t.note = #{etlMission.note}
+    </update>
 </mapper>

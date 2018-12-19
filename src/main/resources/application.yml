@@ -99,6 +99,7 @@ spring:
 etl:
   method: multipart
   isLoadUnfinished: true
+  abandonTimes: 1000
   # kafka
   kafkaProperties:
 #    bootstrap-servers: 172.16.80.128:9092

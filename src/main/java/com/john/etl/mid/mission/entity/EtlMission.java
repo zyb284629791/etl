@@ -5,12 +5,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import java.io.Serializable;
-
-import com.john.etl.constant.EtlOperStatus;
+import com.john.etl.enums.EtlOperStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -48,6 +48,11 @@ public class EtlMission implements Serializable {
      * 创建时间
      */
     private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    private LocalDateTime updateTime;
 
     /**
      * 删除标识， 0: 未删除 1: 已删除

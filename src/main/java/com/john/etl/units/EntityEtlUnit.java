@@ -1,5 +1,6 @@
 package com.john.etl.units;
 
+import com.john.etl.enums.EtlOperStatus;
 import com.john.etl.mid.mission.entity.EtlMission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +22,13 @@ public abstract class EntityEtlUnit {
         if (mission.getOperType() == 3){//删除操作时
             if (canDeleteFromOfficial(mission)){//能否从正式库删除
                 //将status设置成为实际的操作类型，方便后续排查bug时定位
-                return deleteFromOfficial(mission);//从正式库删除
+                boolean deleteFromOfficial = deleteFromOfficial(mission);
+                if (!deleteFromOfficial) {
+                    mission.setOperStatus(EtlOperStatus.DeleteFail);
+                }
+                return deleteFromOfficial;//从正式库删除
             }else{
-                mission.setOperStatus(6);
+                mission.setOperStatus(EtlOperStatus.DeleteValidationFail);
                 logger.info("--------清洗任务不成功，canDeleteFromOfficial方法校验未通过。\n" + mission);
             }
         }else if (mission.getOperType() == 1 || mission.getOperType() == 2){//新增或修改操作
@@ -33,7 +38,7 @@ public abstract class EntityEtlUnit {
                     if (!result){
                         logger.info("--------清洗任务不成功，updateToOfficial方法执行失败。\n" + mission);
                         //将status设置成为实际的操作类型，方便后续排查bug时定位
-                        mission.setOperStatus(5);
+                        mission.setOperStatus(EtlOperStatus.UpdateFail);
                     }
                     return result;
                 }else{
@@ -41,13 +46,13 @@ public abstract class EntityEtlUnit {
                     if (!result){
                         logger.info("--------清洗任务不成功，insertToOfficial方法执行失败。\n" + mission);
                         //将status设置成为实际的操作类型，方便后续排查bug时定位
-                        mission.setOperStatus(4);
+                        mission.setOperStatus(EtlOperStatus.InsertFail);
                     }
                     return result;
                 }
             }else{
                 logger.info("--------清洗任务不成功，hasFullDataInMid方法校验未通过。\n" + mission);
-                mission.setOperStatus(3);
+                mission.setOperStatus(EtlOperStatus.MidValidationFail);
             }
         }else{
             throw new RuntimeException("数据清洗任务出现了无法识别的操作类型。mission id = " );

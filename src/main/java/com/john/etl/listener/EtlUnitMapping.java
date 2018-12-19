@@ -42,16 +42,25 @@ public class EtlUnitMapping implements ApplicationListener<ContextRefreshedEvent
         }
     }
 
-    public void initEtlUnits() throws EtlException {
+    private void initEtlUnits() throws EtlException {
+        // 此方法找到的beanName是注解内value对应的值
         String[] candidateBeans = applicationContext.getBeanNamesForType(EntityEtlUnit.class);
         for (String beanName : candidateBeans) {
             Class<EntityEtlUnit> beanType = (Class<EntityEtlUnit>) applicationContext.getType(beanName);
             if (isEtlUnit(beanType)) {
-                this.etlUnits.put(getTableName(beanType), beanType);
+                // this.etlUnits.put(getTableName(beanType), beanType);
+                // 由于上面得到的beanName已经是注解内value的值，故此处不需要在查找一次了。
+                this.etlUnits.put(beanName, beanType);
             }
         }
     }
 
+    /**
+     *
+     * @param beanType
+     * @return
+     */
+    @Deprecated
     private String getTableName(Class<EntityEtlUnit> beanType) {
         EtlUnit annotation = beanType.getAnnotation(EtlUnit.class);
         String tableName = annotation.tableName();

@@ -1,4 +1,4 @@
-package com.john.etl.constant;
+package com.john.etl.enums;
 
 /**
  * @Description 清洗器执行方法（多线程、单线程）

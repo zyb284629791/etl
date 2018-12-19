@@ -34,6 +34,8 @@ public class MybatisPlusConfiguration {
                                                             String mapper_location)
             throws Exception {
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
+        sqlSessionFactory.setTypeEnumsPackage("com.john.etl.enums");
+        sqlSessionFactory.setTypeAliasesPackage("com.john.etl.*.*.entity");
         sqlSessionFactory.setDataSource(dataSource);
         MybatisConfiguration configuration = new MybatisConfiguration();
         GlobalConfig globalConfig = GlobalConfigUtils.getGlobalConfig(configuration.toString());

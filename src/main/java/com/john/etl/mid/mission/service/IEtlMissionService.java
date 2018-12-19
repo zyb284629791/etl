@@ -2,6 +2,7 @@ package com.john.etl.mid.mission.service;
 
 import com.john.etl.mid.mission.entity.EtlMission;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IEtlMissionService extends IService<EtlMission> {
 
+    void etlSuccess(@Param("etlMission") EtlMission etlMission);
+
+    void etlIgnore(@Param("etlMission") EtlMission etlMission);
+
+    void etlFail(@Param("etlMission") EtlMission etlMission);
 }

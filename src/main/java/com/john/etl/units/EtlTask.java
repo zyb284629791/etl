@@ -1,6 +1,6 @@
 package com.john.etl.units;
 
-import com.john.etl.constant.EtlOperStatus;
+import com.john.etl.enums.EtlOperStatus;
 import com.john.etl.kafka.KafkaProducer;
 import com.john.etl.mid.mission.entity.EtlMission;
 import com.john.etl.mid.mission.service.IEtlMissionService;
@@ -27,14 +27,18 @@ public class EtlTask implements Runnable {
 
     private IEtlMissionService etlMissionService;
 
+    private long abandonTimes;
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public EtlTask(EtlMission etlMission, EntityEtlUnit entityEtlUnit, KafkaProducer kafkaProducer, String defaultTopic, IEtlMissionService etlMissionService) {
+    public EtlTask(EtlMission etlMission, EntityEtlUnit entityEtlUnit, KafkaProducer kafkaProducer,
+                   String defaultTopic, IEtlMissionService etlMissionService,long abandonTimes) {
         this.etlMission = etlMission;
         this.entityEtlUnit = entityEtlUnit;
         this.kafkaProducer = kafkaProducer;
         this.defaultTopic = defaultTopic;
         this.etlMissionService = etlMissionService;
+        this.abandonTimes = abandonTimes;
     }
 
     @Override
@@ -50,14 +54,21 @@ public class EtlTask implements Runnable {
             throw new EtlException("mission,etlUnit,kafkaProducer,defaultTopic must be not null");
         } else {
             try {
-
-                if (entityEtlUnit.doEtl(etlMission)) {
+                boolean etlResult = entityEtlUnit.doEtl(etlMission);
+                // 每次执行结束后执行次数自增
+                etlMission.setOperTimes(etlMission.getOperTimes() == null ? 1 : etlMission.getOperTimes() + 1);
+                if (etlResult) {
                     etlSuccess(etlMission);
                 } else {
                     if (EtlOperStatus.Ignore == etlMission.getOperStatus()) {
                         etlIgnore(etlMission);
                     } else {
-                        etlFail(etlMission);
+                        if (etlMission.getOperTimes() > abandonTimes) {
+                            etlMission.setNote("mission失败超过预设次数，忽略此mission" + etlMission.getNote());
+                            etlIgnore(etlMission);
+                        } else {
+                            etlFail(etlMission);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -69,7 +80,7 @@ public class EtlTask implements Runnable {
                 // 这里用毫秒判断，因为如果用秒的话，1.X秒得到的结果都是1,此时1.9秒的结果也是1不符合要求。
                 long difference = between.toMillis();
                 if (difference > 1000) {
-                    logger.warn("当前mission %s 运行时长为：d%", etlMission.toString(),difference);
+                    logger.warn("当前mission %s 运行时长为：d%", etlMission.toString(), difference);
                 }
             }
         }
@@ -77,28 +88,31 @@ public class EtlTask implements Runnable {
 
     /**
      * 清洗失败
+     *
      * @param etlMission
      */
     private void etlFail(EtlMission etlMission) {
-        logger.error("mission -> %s失败",etlMission.toString());
-        kafkaProducer.produce(defaultTopic,etlMission);
+        logger.error("mission -> %s失败", etlMission.toString());
+        kafkaProducer.produce(defaultTopic, etlMission);
     }
 
     /**
      * 清洗任务被忽略
+     *
      * @param etlMission
      */
     private void etlIgnore(EtlMission etlMission) {
-        logger.info("mission -> %s被忽略",etlMission.toString());
-
+        logger.info("mission -> %s被忽略", etlMission.toString());
+        etlMissionService.etlIgnore(etlMission);
     }
 
     /**
      * 清洗成功
+     *
      * @param etlMission
      */
     private void etlSuccess(EtlMission etlMission) {
-        logger.info("mission -> %s成功",etlMission.toString());
-        etlMissionService.updateById(etlMission);
+        logger.info("mission -> %s成功", etlMission.toString());
+        etlMissionService.etlSuccess(etlMission);
     }
 }

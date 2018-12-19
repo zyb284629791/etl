@@ -7,8 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 
 /**
  * @Description Kafka生产者
@@ -27,16 +31,41 @@ public class KafkaProducer {
     @Autowired
     private IEtlMissionService etlMissionService;
 
-    public void produce(String topic,Integer missionId){
+    /**
+     * 根据id生产1条mission
+     * @param topic
+     * @param missionId
+     */
+    public void produce(String topic, Integer missionId) {
+        logger.info("当前mission的ID是%s",missionId);
         EtlMission etlMission = etlMissionService.getById(missionId);
-        logger.info("############");
-        logger.info("当前mission的ID是%s",etlMission.getId());
-        kafkaTemplate.send(topic, etlMission);
+        if (!ObjectUtils.isEmpty(etlMission) && !StringUtils.isEmpty(topic)) {
+            kafkaTemplate.send(topic, etlMission);
+        }
     }
 
-    public void produce(String topic, EtlMission mission){
-        kafkaTemplate.send(topic, mission);
+    /**
+     * 生产一条mission
+     * @param topic
+     * @param mission
+     */
+    public void produce(String topic, EtlMission mission) {
+        if (!ObjectUtils.isEmpty(mission) && !StringUtils.isEmpty(topic)) {
+            kafkaTemplate.send(topic, mission);
+        }
     }
 
-
+    /**
+     * 批量生产mission
+     * @param topic
+     * @param etlMissions
+     */
+    public void batchProduce(String topic, Collection<EtlMission> etlMissions) {
+        if (!CollectionUtils.isEmpty(etlMissions) && !StringUtils.isEmpty(topic)) {
+            logger.info("批量生产mission，当前共生产%d条mission", etlMissions.size());
+            etlMissions.stream().forEach((etlMission ->
+                    kafkaTemplate.send(topic, etlMission)));
+            logger.info("批量生产mission结束");
+        }
+    }
 }

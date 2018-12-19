@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @Description Kafka消费者
  * @Author: Yb.Z
@@ -29,15 +27,4 @@ public class KafkaConsumer {
         logger.info("消费到消息：" + etlMission.toString());
         etlTaskThreadPool.startEtl(etlMission);
     }
-
-    @KafkaListener(topics = "test")
-    public void consume(String message){
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        logger.info("消费到：" + message);
-    }
-
 }

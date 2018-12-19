@@ -1,25 +1,31 @@
 package com.john.etl.units;
 
+import com.john.etl.enums.EtlMethod;
+import com.john.etl.kafka.KafkaProducer;
 import com.john.etl.listener.EtlUnitMapping;
 import com.john.etl.mid.mission.entity.EtlMission;
 import com.john.etl.mid.mission.service.IEtlMissionService;
 import com.john.etl.properties.EtlConfigProperties;
-import com.john.etl.constant.EtlMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 
 /**
  * @Author: 张彦斌
  * @Date: 2018-12-18 11:29
  */
 @Component
-public class EtlTaskThreadPool implements InitializingBean {
+public class EtlTaskThreadPool implements InitializingBean, ApplicationContextAware {
 
     @Autowired
     private EtlConfigProperties etlConfigProperties;
@@ -28,12 +34,17 @@ public class EtlTaskThreadPool implements InitializingBean {
     private EtlUnitMapping etlUnitMapping;
 
     /**
-     * 此处不知道多线程下会不会有问题
+     * 此处不知道在多线程清洗时会不会有问题
      */
     @Autowired
     private IEtlMissionService etlMissionService;
 
+    @Autowired
+    private KafkaProducer kafkaProducer;
+
     private ExecutorService executorService;
+
+    private ApplicationContext applicationContext;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -65,6 +76,17 @@ public class EtlTaskThreadPool implements InitializingBean {
      */
     public void startEtl(EtlMission etlMission){
         String defaultTopic = etlConfigProperties.getKafkaProperties().getTemplate().getDefaultTopic();
+        long abandonTimes = etlConfigProperties.getAbandonTimes();
+        Class<EntityEtlUnit> etlUnitByTableName = etlUnitMapping.getEtlUnitByTableName(etlMission.getTableName());
+        if (!ObjectUtils.isEmpty(etlUnitByTableName)) {
+            EntityEtlUnit entityEtlUnit = applicationContext.getBean(etlUnitByTableName);
+            EtlTask etlTask = new EtlTask(etlMission,entityEtlUnit,kafkaProducer,defaultTopic,etlMissionService,abandonTimes);
+            executorService.submit(etlTask);
+        }
+    }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

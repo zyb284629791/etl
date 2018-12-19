@@ -24,7 +24,7 @@ import java.util.Map;
  * @Date: 2018/11/30.21:53
  * @Version：1.0
  */
-//@Configuration
+@Configuration
 public class KafkaProducerConfiguration {
 
     @Autowired
