@@ -2,7 +2,9 @@ package com.john.etl.mid.mission.service;
 
 import com.john.etl.mid.mission.entity.EtlMission;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -14,9 +16,12 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface IEtlMissionService extends IService<EtlMission> {
 
-    void etlSuccess(@Param("etlMission") EtlMission etlMission);
+    void etlSuccess(EtlMission etlMission);
 
-    void etlIgnore(@Param("etlMission") EtlMission etlMission);
+    void etlIgnore(EtlMission etlMission);
 
-    void etlFail(@Param("etlMission") EtlMission etlMission);
+    void etlFail(EtlMission etlMission);
+
+    Collection<EtlMission> loadByList(List<String> positions,String field, boolean isExclude);
+
 }

@@ -72,6 +72,8 @@ public class EtlTask implements Runnable {
                     }
                 }
             } catch (Exception e) {
+                // 每次执行结束后执行次数自增
+                etlMission.setOperTimes(etlMission.getOperTimes() == null ? 1 : etlMission.getOperTimes() + 1);
                 e.printStackTrace();
                 logger.error("清洗失败，错误信息是：" + e.toString());
             } finally {

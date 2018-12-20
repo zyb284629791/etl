@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 /**
  * @Author: 张彦斌
  * @Date: 2018-12-19 9:27
@@ -24,5 +27,11 @@ public class MybatisPlusTest {
         EtlMission byId = missionService.getById(1);
         missionService.etlSuccess(byId);
         System.out.println(byId);
+    }
+
+    @Test
+    public void testdynamic(){
+        Collection<EtlMission> missions = missionService.loadByList(Arrays.asList("t_spc_station"),"tableName",true);
+        missions.stream().forEach(System.out::println);
     }
 }

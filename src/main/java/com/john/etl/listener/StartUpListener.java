@@ -14,10 +14,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description 监听容器启动
@@ -30,10 +27,12 @@ public class StartUpListener implements ApplicationListener<ContextRefreshedEven
 
     private Logger logger = LoggerFactory.getLogger(StartUpListener.class);
     private ApplicationContext applicationContext = null;
-    private KafkaProducer kafkaProducer;
-    private IEtlMissionService etlMissionService;
     private String defaultTopic;
 
+    @Autowired
+    private KafkaProducer kafkaProducer;
+    @Autowired
+    private IEtlMissionService etlMissionService;
     @Autowired
     private EtlConfigProperties etlConfigProperties;
 
@@ -52,8 +51,9 @@ public class StartUpListener implements ApplicationListener<ContextRefreshedEven
          * 一个都没配置时默认全部加载
          */
         if (etlConfigProperties.isLoadUnfinished()) {
-            kafkaProducer = applicationContext.getBean("kafkaProducer", KafkaProducer.class);
-            etlMissionService = applicationContext.getBean("etlMissionService", IEtlMissionService.class);
+            logger.info("从数据库加载未清洗的mission");
+//            kafkaProducer = applicationContext.getBean("kafkaProducer", KafkaProducer.class);
+//            etlMissionService = applicationContext.getBean("etlMissionService", IEtlMissionService.class);
             defaultTopic = etlConfigProperties.getKafkaProperties().getTemplate().getDefaultTopic();
             List<String> loadById = etlConfigProperties.getLoadUnfinishedById();
             List<String> loadByPosition = etlConfigProperties.getLoadUnfinishedByPosition();
@@ -68,25 +68,25 @@ public class StartUpListener implements ApplicationListener<ContextRefreshedEven
                 Collection<EtlMission> etlMissions = etlMissionService.listByMap(params);
                 kafkaProducer.batchProduce(defaultTopic,etlMissions);
             } else {
+                Collection<EtlMission> etlMissions = new ArrayList<>(0);
                 if (!CollectionUtils.isEmpty(loadById)) {
-                    loadById(loadById);
-                    return;
+                    etlMissions = loadById(loadById);
                 }
-                if (!CollectionUtils.isEmpty(loadByPosition)) {
-                    loaddByPosition(loadByPosition);
-                    return;
+                if (!CollectionUtils.isEmpty(loadByPosition) && CollectionUtils.isEmpty(etlMissions)) {
+                    etlMissions = loadByPosition(loadByPosition);
                 }
-                if (!CollectionUtils.isEmpty(loadByTableName)) {
-                    loadByTableName(loadByTableName);
-                    return;
+                if (!CollectionUtils.isEmpty(loadByTableName) && CollectionUtils.isEmpty(etlMissions)) {
+                    etlMissions = loadByTableName(loadByTableName);
                 }
-                if (!CollectionUtils.isEmpty(loadExcludePosition)) {
-                    loadExcludePosition(loadExcludePosition);
-                    return;
+                if (!CollectionUtils.isEmpty(loadExcludePosition) && CollectionUtils.isEmpty(etlMissions)) {
+                    etlMissions = loadExcludePosition(loadExcludePosition);
                 }
-                if (!CollectionUtils.isEmpty(loadExcludeTableName)) {
-                    loadExcludeTableName(loadExcludeTableName);
-                    return;
+                if (!CollectionUtils.isEmpty(loadExcludeTableName) && CollectionUtils.isEmpty(etlMissions)) {
+                    etlMissions = loadExcludeTableName(loadExcludeTableName);
+                }
+
+                if (!CollectionUtils.isEmpty(etlMissions)) {
+                    kafkaProducer.batchProduce(defaultTopic, etlMissions);
                 }
             }
         }
@@ -94,45 +94,47 @@ public class StartUpListener implements ApplicationListener<ContextRefreshedEven
 
     /**
      * 根据missionId加载mission
-     * @param loadById
+     * @param ids
      */
-    private void loadById(List<String> loadById) {
-        Collection<EtlMission> etlMissions = etlMissionService.listByIds(loadById);
-        if (!CollectionUtils.isEmpty(etlMissions)) {
-            kafkaProducer.batchProduce(defaultTopic, etlMissions);
-        }
+    private Collection<EtlMission> loadById(List<String> ids) {
+        logger.info("根据missionId批量加载mission");
+        return etlMissionService.listByIds(ids);
     }
 
     /**
      * 根据position加载mission
-     * @param loadByPosition
+     * @param positions
      */
-    private void loaddByPosition(List<String> loadByPosition) {
-
+    private Collection<EtlMission> loadByPosition(List<String> positions) {
+        logger.info("根据position批量加载mission");
+        return etlMissionService.loadByList(positions,"position",false);
     }
 
     /**
      * 根据表名加载mission
-     * @param loadByTableName
+     * @param tableNames
      */
-    private void loadByTableName(List<String> loadByTableName) {
-
+    private Collection<EtlMission> loadByTableName(List<String> tableNames) {
+        logger.info("根据tableName批量加载mission");
+        return etlMissionService.loadByList(tableNames,"tableName",false);
     }
 
     /**
      * 根据position过滤mission
-     * @param loadExcludePosition
+     * @param excludePositions
      */
-    private void loadExcludePosition(List<String> loadExcludePosition) {
-
+    private Collection<EtlMission> loadExcludePosition(List<String> excludePositions) {
+        logger.info("根据position批量过滤mission");
+        return etlMissionService.loadByList(excludePositions,"position",true);
     }
 
     /**
      * 根据表名过滤mission
-     * @param loadExcludeTableName
+     * @param excludeTableNames
      */
-    private void loadExcludeTableName(List<String> loadExcludeTableName) {
-
+    private Collection<EtlMission> loadExcludeTableName(List<String> excludeTableNames) {
+        logger.info("根据tableName批量过滤mission");
+        return etlMissionService.loadByList(excludeTableNames,"tableName",true);
     }
 
 

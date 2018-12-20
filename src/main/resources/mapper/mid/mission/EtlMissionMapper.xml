@@ -2,27 +2,61 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.john.etl.mid.mission.mapper.EtlMissionMapper">
 
+    <sql id="selectSegment">
+        select * from t_etl_mission m
+    </sql>
+
     <sql id="updateSegment">
-        update t_etl_mission t set
-          t.update_time = now(),t.oper_status = #{etlMission.operStatus},t.oper_times = #{etlMission.operTimes }
+        update t_etl_mission m set
+          m.update_time = now(),m.oper_status = #{etlMission.operStatus},m.oper_times = #{etlMission.operTimes }
     </sql>
 
     <update id="etlSuccess" parameterType="EtlMission">
         <include refid="updateSegment"></include>
-        t.note = null,t.delete_flag = 1
-      where t.id = #{etlMission.id}
+        m.note = null,m.delete_flag = 1
+        where m.id = #{etlMission.id}
     </update>
 
 
     <update id="etlIgnore" parameterType="EtlMission">
         <include refid="updateSegment"></include>
-        t.delete_flag = 1,t.note = #{etlMission.note}
-        where t.id = #{etlMission.id}
+        m.delete_flag = 1,m.note = #{etlMission.note}
+        where m.id = #{etlMission.id}
     </update>
 
 
     <update id="etlFail" parameterType="EtlMission">
         <include refid="updateSegment"></include>
-        t.note = #{etlMission.note}
+        m.note = #{etlMission.note}
     </update>
+
+
+    <select id="loadByList" resultType="EtlMission">
+        <include refid="selectSegment"></include>
+        <where> m.delete_flag = 0
+            <choose>
+                <when test='field != null and field == "position"'>
+                    and m.position
+                </when>
+                <when test='field != null and field == "tableName"'>
+                    and m.table_name
+                </when>
+                <otherwise>
+                    and m.#{field}
+                </otherwise>
+            </choose>
+            <choose>
+                <when test="isExclude != null and isExclude == false ">
+                    in
+                </when>
+                <otherwise>
+                    not in
+                </otherwise>
+            </choose>
+            <foreach item="item" index="index" collection="candidates"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </select>
 </mapper>

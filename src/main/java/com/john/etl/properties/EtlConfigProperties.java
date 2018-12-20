@@ -46,7 +46,7 @@ public class EtlConfigProperties {
     /**
      * 是否在启动时加载未清洗完成数据
      */
-    private boolean isLoadUnfinished;
+    private boolean loadUnfinished;
 
     /**
      * 清洗失败达到抛弃mission的次数

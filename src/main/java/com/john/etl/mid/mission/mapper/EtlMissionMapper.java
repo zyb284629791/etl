@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * <p>
  * 清洗任务表 Mapper 接口
@@ -21,4 +24,6 @@ public interface EtlMissionMapper extends BaseMapper<EtlMission> {
     void etlIgnore(@Param("etlMission") EtlMission etlMission);
 
     void etlFail(@Param("etlMission") EtlMission etlMission);
+
+    List<EtlMission> loadByList(@Param("candidates") List<String> candidates,@Param("field") String field, @Param("isExclude") boolean isExclude);
 }
