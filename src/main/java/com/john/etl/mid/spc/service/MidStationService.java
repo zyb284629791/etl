@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
- * 站点表 服务类
+ * 站点 服务类
  * </p>
  *
- * @author Mac OS X
- * @since 2018-11-27
+ * @author Windows 10
+ * @since 2018-12-21
  */
 public interface MidStationService extends IService<MidStation> {
 

@@ -25,5 +25,5 @@ public interface EtlMissionMapper extends BaseMapper<EtlMission> {
 
     void etlFail(@Param("etlMission") EtlMission etlMission);
 
-    List<EtlMission> loadByList(@Param("candidates") List<String> candidates,@Param("field") String field, @Param("isExclude") boolean isExclude);
+    <T> List<EtlMission> loadByList(@Param("candidates") List<T> candidates,@Param("field") String field, @Param("isExclude") boolean isExclude);
 }

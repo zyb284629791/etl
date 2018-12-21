@@ -14,9 +14,9 @@ public class MybatisPlusUtilTest {
 
 //        MabatisGeneratorUtil.initBasePackageAndDataSourceAndIdType("com.john.etl.official","official", IdType.AUTO);
         MabatisGeneratorUtil.initBasePackageAndDataSourceAndIdType("com.john.etl.mid","", IdType.ID_WORKER_STR);
-//        MabatisGeneratorUtil.generator("spc", "t_spc_station", "OfficialStation", "t_");
+        MabatisGeneratorUtil.generator("spc", "t_spc_station", "MidStation", "t_");
 //        MabatisGeneratorUtil.generator("instance", "t_int_nodes", "OfficialNodes", "t_");
 
-         MabatisGeneratorUtil.generator("mission", "t_etl_mission", "", "t_");
+//         MabatisGeneratorUtil.generator("mission", "t_etl_mission", "", "t_");
     }
 }

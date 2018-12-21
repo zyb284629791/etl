@@ -30,7 +30,8 @@ public class StationEtl extends EntityEtlUnit {
 
     @Override
     protected boolean hasFullDataInMid(EtlMission mission) throws Exception {
-        midStation = midStationService.getById(mission.getResId());
+        String midId = mission.getPosition() + "-" + mission.getResId();
+        midStation = midStationService.getById(midId);
 
         if (ObjectUtils.isEmpty(midStation)) {
             mission.setNote("midStation must not be null!");

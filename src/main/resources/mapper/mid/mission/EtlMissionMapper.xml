@@ -13,21 +13,21 @@
 
     <update id="etlSuccess" parameterType="EtlMission">
         <include refid="updateSegment"></include>
-        m.note = null,m.delete_flag = 1
+        ,m.note = null,m.delete_flag = 1
         where m.id = #{etlMission.id}
     </update>
 
 
     <update id="etlIgnore" parameterType="EtlMission">
         <include refid="updateSegment"></include>
-        m.delete_flag = 1,m.note = #{etlMission.note}
+        ,m.delete_flag = 1,m.note = #{etlMission.note}
         where m.id = #{etlMission.id}
     </update>
 
 
     <update id="etlFail" parameterType="EtlMission">
         <include refid="updateSegment"></include>
-        m.note = #{etlMission.note}
+        ,m.note = #{etlMission.note}
     </update>
 
 

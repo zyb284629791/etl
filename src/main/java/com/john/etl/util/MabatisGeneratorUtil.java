@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.FileType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.john.etl.units.EtlException;
@@ -71,6 +73,17 @@ public class MabatisGeneratorUtil {
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
+                this.setFileCreate(new IFileCreate() {
+                    @Override
+                    public boolean isCreate(ConfigBuilder configBuilder, FileType fileType, String filePath) {
+                        return true;
+                    }
+
+                    @Override
+                    public void checkDir(String filePath) {
+
+                    }
+                });
 //                HashMap<String,Object> map = new HashMap<>();
 //                PackageConfig packageConfig = new PackageConfig();
 //                packageConfig.setModuleName(moduleName);

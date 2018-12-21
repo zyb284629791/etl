@@ -22,6 +22,6 @@ public interface IEtlMissionService extends IService<EtlMission> {
 
     void etlFail(EtlMission etlMission);
 
-    Collection<EtlMission> loadByList(List<String> positions,String field, boolean isExclude);
+    <T> Collection<EtlMission> loadByList(List<T> list,String field, boolean isExclude);
 
 }

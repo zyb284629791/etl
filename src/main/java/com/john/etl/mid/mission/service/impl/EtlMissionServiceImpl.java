@@ -49,7 +49,7 @@ public class EtlMissionServiceImpl extends ServiceImpl<EtlMissionMapper, EtlMiss
     }
 
     @Override
-    public Collection<EtlMission> loadByList(List<String> positions,String field, boolean isExclude) {
+    public <T> Collection<EtlMission> loadByList(List<T> list,String field, boolean isExclude) {
         try {
             Field clazzField = EtlMission.class.getDeclaredField(field);
             if (ObjectUtils.isEmpty(clazzField)) {
@@ -59,7 +59,7 @@ public class EtlMissionServiceImpl extends ServiceImpl<EtlMissionMapper, EtlMiss
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
-        return etlMissionMapper.loadByList(positions,field,isExclude);
+        return etlMissionMapper.loadByList(list,field,isExclude);
     }
 
 }

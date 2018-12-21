@@ -12,11 +12,11 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 站点表
+ * 站点
  * </p>
  *
- * @author Mac OS X
- * @since 2018-11-27
+ * @author Windows 10
+ * @since 2018-12-21
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,12 +27,12 @@ public class MidStation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID
+     * cs库Id
      */
     private Long id;
 
     /**
-     * 中间库ID
+     * 中间库Id
      */
     @TableId(value = "mid_id", type = IdType.ID_WORKER_STR)
     private String midId;
@@ -43,20 +43,19 @@ public class MidStation implements Serializable {
     private String address;
 
     /**
-     * node表id
+     * NodeId
      */
     private Long nodeId;
 
     /**
-     * 创建时间
+     * 地区标识
      */
+    private String position;
+
     private LocalDateTime createTime;
 
-    /**
-     * 删除标识
-     */
     @TableLogic
-    private Boolean deleteFlag;
+    private Integer deleteFlag;
 
 
 }

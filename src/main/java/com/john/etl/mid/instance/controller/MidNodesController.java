@@ -4,6 +4,7 @@ package com.john.etl.mid.instance.controller;
 import com.john.etl.mid.instance.entity.MidNodes;
 import com.john.etl.mid.instance.service.MidNodesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -24,7 +25,7 @@ public class MidNodesController {
     @Autowired
     private MidNodesService midNodesService;
 
-    @RequestMapping("/findById/{midId}")
+    @GetMapping("/findById/{midId}")
     public MidNodes findById(@PathVariable String midId){
         return midNodesService.getById(midId);
     }

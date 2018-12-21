@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 站点表 前端控制器
+ * 站点 前端控制器
  * </p>
  *
- * @author Mac OS X
- * @since 2018-11-27
+ * @author Windows 10
+ * @since 2018-12-21
  */
 @RestController
 @RequestMapping("/spc/midStation")

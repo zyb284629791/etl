@@ -4,17 +4,20 @@ import com.john.etl.enums.EtlOperStatus;
 import com.john.etl.kafka.KafkaProducer;
 import com.john.etl.mid.mission.entity.EtlMission;
 import com.john.etl.mid.mission.service.IEtlMissionService;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.concurrent.Semaphore;
 
 /**
  * @Author: 张彦斌
  * @Date: 2018-12-18 14:14
  */
+@Data
 public class EtlTask implements Runnable {
 
     private EtlMission etlMission;
@@ -29,17 +32,9 @@ public class EtlTask implements Runnable {
 
     private long abandonTimes;
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private Semaphore semaphore;
 
-    public EtlTask(EtlMission etlMission, EntityEtlUnit entityEtlUnit, KafkaProducer kafkaProducer,
-                   String defaultTopic, IEtlMissionService etlMissionService,long abandonTimes) {
-        this.etlMission = etlMission;
-        this.entityEtlUnit = entityEtlUnit;
-        this.kafkaProducer = kafkaProducer;
-        this.defaultTopic = defaultTopic;
-        this.etlMissionService = etlMissionService;
-        this.abandonTimes = abandonTimes;
-    }
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void run() {
@@ -48,6 +43,11 @@ public class EtlTask implements Runnable {
         // 返回为true，则清空mission的note字段，删除mission
         // 返回false，判断是否被忽略，若被忽略则直接删除mission
         // 返回false且未被忽略的mission，重新生产，加入Kafka中
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         LocalDateTime start = LocalDateTime.now();
         if (ObjectUtils.isEmpty(etlMission) || ObjectUtils.isEmpty(entityEtlUnit) || ObjectUtils.isEmpty(kafkaProducer)
                 || ObjectUtils.isEmpty(defaultTopic)) {
@@ -75,6 +75,7 @@ public class EtlTask implements Runnable {
                 // 每次执行结束后执行次数自增
                 etlMission.setOperTimes(etlMission.getOperTimes() == null ? 1 : etlMission.getOperTimes() + 1);
                 e.printStackTrace();
+                etlFail(etlMission);
                 logger.error("清洗失败，错误信息是：" + e.toString());
             } finally {
                 LocalDateTime end = LocalDateTime.now();
@@ -84,6 +85,7 @@ public class EtlTask implements Runnable {
                 if (difference > 1000) {
                     logger.warn("当前mission %s 运行时长为：d%", etlMission.toString(), difference);
                 }
+                semaphore.release();
             }
         }
     }

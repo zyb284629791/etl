@@ -18,6 +18,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 
 /**
@@ -42,11 +43,15 @@ public class EtlTaskThreadPool implements InitializingBean, ApplicationContextAw
     @Autowired
     private KafkaProducer kafkaProducer;
 
+    // 线程池
     private ExecutorService executorService;
 
     private ApplicationContext applicationContext;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+
+    // 信号量，用来控制并发数
+    private Semaphore semaphore;
 
 
     @Override
@@ -55,13 +60,16 @@ public class EtlTaskThreadPool implements InitializingBean, ApplicationContextAw
         switch (method) {
             case single:
                 executorService = Executors.newSingleThreadExecutor();
+                semaphore = new Semaphore(1);
                 break;
             case multipart:
                 executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+                semaphore = new Semaphore(Runtime.getRuntime().availableProcessors());
                 break;
             default:
                 logger.warn("未设置etl运行方式,默认以多线程运行...");
                 executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+                semaphore = new Semaphore(Runtime.getRuntime().availableProcessors());
                 break;
         }
     }
@@ -80,7 +88,14 @@ public class EtlTaskThreadPool implements InitializingBean, ApplicationContextAw
         Class<EntityEtlUnit> etlUnitByTableName = etlUnitMapping.getEtlUnitByTableName(etlMission.getTableName());
         if (!ObjectUtils.isEmpty(etlUnitByTableName)) {
             EntityEtlUnit entityEtlUnit = applicationContext.getBean(etlUnitByTableName);
-            EtlTask etlTask = new EtlTask(etlMission,entityEtlUnit,kafkaProducer,defaultTopic,etlMissionService,abandonTimes);
+            EtlTask etlTask = new EtlTask();
+            etlTask.setAbandonTimes(abandonTimes);
+            etlTask.setDefaultTopic(defaultTopic);
+            etlTask.setEntityEtlUnit(entityEtlUnit);
+            etlTask.setEtlMission(etlMission);
+            etlTask.setEtlMissionService(etlMissionService);
+            etlTask.setKafkaProducer(kafkaProducer);
+            etlTask.setSemaphore(semaphore);
             executorService.submit(etlTask);
         }
     }

@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- * 站点表 服务实现类
+ * 站点 服务实现类
  * </p>
  *
- * @author Mac OS X
- * @since 2018-11-27
+ * @author Windows 10
+ * @since 2018-12-21
  */
 @Service
 public class MidStationServiceImpl extends ServiceImpl<MidStationMapper, MidStation> implements MidStationService {
