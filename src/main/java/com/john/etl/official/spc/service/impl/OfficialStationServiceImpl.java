@@ -1,5 +1,6 @@
 package com.john.etl.official.spc.service.impl;
 
+import com.john.etl.mybatisplus.service.impl.ServiceExtendImpl;
 import com.john.etl.official.spc.entity.OfficialStation;
 import com.john.etl.official.spc.mapper.OfficialStationMapper;
 import com.john.etl.official.spc.service.OfficialStationService;
@@ -15,6 +16,6 @@ import org.springframework.stereotype.Service;
  * @since 2018-12-21
  */
 @Service
-public class OfficialStationServiceImpl extends ServiceImpl<OfficialStationMapper, OfficialStation> implements OfficialStationService {
+public class OfficialStationServiceImpl extends ServiceExtendImpl<OfficialStationMapper, OfficialStation> implements OfficialStationService {
 
 }

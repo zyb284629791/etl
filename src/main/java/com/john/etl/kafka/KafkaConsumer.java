@@ -22,7 +22,7 @@ public class KafkaConsumer {
     @Autowired
     private EtlTaskThreadPool etlTaskThreadPool;
 
-    @KafkaListener(topics = "${etl.kafkaProperties.template.defaultTopic}")
+//    @KafkaListener(topics = "${etl.kafkaProperties.template.defaultTopic}")
     public void consume(EtlMission etlMission){
         logger.info("消费到消息：" + etlMission.toString());
         etlTaskThreadPool.startEtl(etlMission);

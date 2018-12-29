@@ -1,7 +1,7 @@
 package com.john.etl.official.spc.service;
 
+import com.john.etl.mybatisplus.service.IServiceExtend;
 import com.john.etl.official.spc.entity.OfficialStation;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author Windows 10
  * @since 2018-12-21
  */
-public interface OfficialStationService extends IService<OfficialStation> {
+public interface OfficialStationService extends IServiceExtend<OfficialStation> {
 
 }

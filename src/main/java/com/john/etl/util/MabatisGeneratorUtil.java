@@ -139,6 +139,11 @@ public class MabatisGeneratorUtil {
         strategy.setEntityLombokModel(true);
         // restController
         strategy.setRestControllerStyle(true);
+        // 自定义的mapper，增加了insertWithId方法
+        strategy.setSuperMapperClass("com.john.etl.mybatisplus.mapper.BaseMapperExtend");
+        // 自定义的service和impl 增加了insertWithId方法
+        strategy.setSuperServiceClass("com.john.etl.mybatisplus.service.IServiceExtend");
+        strategy.setSuperServiceImplClass("com.john.etl.mybatisplus.service.impl.ServiceExtendImpl");
 //        strategy.setSuperControllerClass("com.baomidou.ant.common.BaseController");
         strategy.setInclude(tableName);
 //        strategy.setSuperEntityColumns("id");

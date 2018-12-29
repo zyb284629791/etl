@@ -1,11 +1,10 @@
 package com.john.etl.mid.mission.mapper;
 
 import com.john.etl.mid.mission.entity.EtlMission;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.john.etl.mybatisplus.mapper.BaseMapperExtend;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,7 +16,7 @@ import java.util.List;
  * @since 2018-11-28
  */
 @Mapper
-public interface EtlMissionMapper extends BaseMapper<EtlMission> {
+public interface EtlMissionMapper extends BaseMapperExtend<EtlMission> {
 
     void etlSuccess(@Param("etlMission") EtlMission etlMission);
 

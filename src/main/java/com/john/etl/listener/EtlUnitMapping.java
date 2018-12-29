@@ -51,6 +51,8 @@ public class EtlUnitMapping implements ApplicationListener<ContextRefreshedEvent
                 // this.etlUnits.put(getTableName(beanType), beanType);
                 // 由于上面得到的beanName已经是注解内value的值，故此处不需要在查找一次了。
                 this.etlUnits.put(beanName, beanType);
+            } else{
+                logger.error("tableName ->{}不是etlUnit清洗器",beanName);
             }
         }
     }
@@ -58,6 +60,7 @@ public class EtlUnitMapping implements ApplicationListener<ContextRefreshedEvent
     /**
      *
      * @param beanType
+     * 由于注解得到的beanName已经是注解内value的值，故此处不需要在查找一次了。
      * @return
      */
     @Deprecated
@@ -65,8 +68,8 @@ public class EtlUnitMapping implements ApplicationListener<ContextRefreshedEvent
         EtlUnit annotation = beanType.getAnnotation(EtlUnit.class);
         String tableName = annotation.tableName();
         if (StringUtils.isEmpty(tableName)) {
-            logger.error("%s清洗器错误，未设置tableName",beanType);
-            throw new EtlException(String.format("%s清洗器初始化错误，未设置tableName", beanType));
+            logger.error("{}清洗器错误，未设置tableName",beanType);
+            throw new EtlException(String.format("{}清洗器初始化错误，未设置tableName", beanType));
         }
         return tableName;
     }

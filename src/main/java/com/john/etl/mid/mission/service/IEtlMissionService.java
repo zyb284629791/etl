@@ -2,6 +2,7 @@ package com.john.etl.mid.mission.service;
 
 import com.john.etl.mid.mission.entity.EtlMission;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.john.etl.mybatisplus.service.IServiceExtend;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * @author Mac OS X
  * @since 2018-11-28
  */
-public interface IEtlMissionService extends IService<EtlMission> {
+public interface IEtlMissionService extends IServiceExtend<EtlMission> {
 
     void etlSuccess(EtlMission etlMission);
 

@@ -4,7 +4,7 @@ import com.john.etl.enums.EtlOperStatus;
 import com.john.etl.mid.mission.entity.EtlMission;
 import com.john.etl.mid.mission.mapper.EtlMissionMapper;
 import com.john.etl.mid.mission.service.IEtlMissionService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.john.etl.mybatisplus.service.impl.ServiceExtendImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.List;
  * @since 2018-11-28
  */
 @Service
-public class EtlMissionServiceImpl extends ServiceImpl<EtlMissionMapper, EtlMission> implements IEtlMissionService {
+public class EtlMissionServiceImpl extends ServiceExtendImpl<EtlMissionMapper, EtlMission> implements IEtlMissionService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -53,7 +53,7 @@ public class EtlMissionServiceImpl extends ServiceImpl<EtlMissionMapper, EtlMiss
         try {
             Field clazzField = EtlMission.class.getDeclaredField(field);
             if (ObjectUtils.isEmpty(clazzField)) {
-                logger.error("%s字段在EtlMission类中不存在",field);
+                logger.error("{}字段在EtlMission类中不存在",field);
                 return null;
             }
         } catch (NoSuchFieldException e) {

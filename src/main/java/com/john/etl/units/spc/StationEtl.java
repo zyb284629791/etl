@@ -50,7 +50,7 @@ public class StationEtl extends EntityEtlUnit {
     protected boolean insertToOfficial(EtlMission mission) throws Exception {
         OfficialStation officialStation = new OfficialStation();
         BeanUtils.copyProperties(midStation,officialStation);
-        officialStationService.saveOrUpdate(officialStation);
+        officialStationService.saveWithId(officialStation);
         return true;
     }
 

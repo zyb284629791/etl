@@ -99,7 +99,7 @@ spring:
 etl:
   method: multipart
   abandonTimes: 1000
-  load-unfinished: true
+  load-unfinished: false
   load-unfinished-by-position: CSG
   # kafka
   kafkaProperties:
@@ -126,3 +126,8 @@ etl:
       #      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     template:
       defaultTopic: etl-topic
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

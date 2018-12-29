@@ -83,7 +83,7 @@ public class EtlTask implements Runnable {
                 // 这里用毫秒判断，因为如果用秒的话，1.X秒得到的结果都是1,此时1.9秒的结果也是1不符合要求。
                 long difference = between.toMillis();
                 if (difference > 1000) {
-                    logger.warn("当前mission %s 运行时长为：d%", etlMission.toString(), difference);
+                    logger.warn("当前mission {} 运行时长为：{}", etlMission.toString(), difference);
                 }
                 semaphore.release();
             }
@@ -96,7 +96,7 @@ public class EtlTask implements Runnable {
      * @param etlMission
      */
     private void etlFail(EtlMission etlMission) {
-        logger.error("mission -> %s失败", etlMission.toString());
+        logger.error("mission -> {}失败", etlMission.toString());
         kafkaProducer.produce(defaultTopic, etlMission);
     }
 
@@ -106,7 +106,7 @@ public class EtlTask implements Runnable {
      * @param etlMission
      */
     private void etlIgnore(EtlMission etlMission) {
-        logger.info("mission -> %s被忽略", etlMission.toString());
+        logger.info("mission -> {}被忽略", etlMission.toString());
         etlMissionService.etlIgnore(etlMission);
     }
 
@@ -116,7 +116,7 @@ public class EtlTask implements Runnable {
      * @param etlMission
      */
     private void etlSuccess(EtlMission etlMission) {
-        logger.info("mission -> %s成功", etlMission.toString());
+        logger.info("mission -> {}成功", etlMission.toString());
         etlMissionService.etlSuccess(etlMission);
     }
 }

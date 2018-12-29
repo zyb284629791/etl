@@ -26,7 +26,6 @@ import java.util.*;
 public class StartUpListener implements ApplicationListener<ContextRefreshedEvent> {
 
     private Logger logger = LoggerFactory.getLogger(StartUpListener.class);
-    private ApplicationContext applicationContext = null;
     private String defaultTopic;
 
     @Autowired
@@ -38,7 +37,6 @@ public class StartUpListener implements ApplicationListener<ContextRefreshedEven
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        applicationContext = event.getApplicationContext();
         /**
          * 是否需要加载未清洗的mission继续清洗
          * 需要时可

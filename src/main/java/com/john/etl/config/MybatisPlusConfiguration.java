@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import com.john.etl.mybatisplus.injector.InsertWithIdInjector;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
@@ -40,6 +41,11 @@ public class MybatisPlusConfiguration {
         MybatisConfiguration configuration = new MybatisConfiguration();
         GlobalConfig globalConfig = GlobalConfigUtils.getGlobalConfig(configuration.toString());
         globalConfig.setRefresh(true);
+        InsertWithIdInjector insertWithIdInjector = new InsertWithIdInjector();
+        globalConfig.setSqlInjector(insertWithIdInjector);
+        GlobalConfigUtils.setGlobalConfig(configuration,globalConfig);
+        // 注意，此处必须要通过这种方法将global赋给sqlSessionFactory，否则自定义的配置无法生效!
+        sqlSessionFactory.setGlobalConfig(globalConfig);
         configuration.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
         configuration.setJdbcTypeForNull(JdbcType.NULL);
         sqlSessionFactory.setConfiguration(configuration);

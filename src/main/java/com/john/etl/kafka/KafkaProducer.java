@@ -37,7 +37,7 @@ public class KafkaProducer {
      * @param missionId
      */
     public void produce(String topic, Integer missionId) {
-        logger.info("当前mission的ID是%s",missionId);
+        logger.info("当前mission的ID是{}",missionId);
         EtlMission etlMission = etlMissionService.getById(missionId);
         if (!ObjectUtils.isEmpty(etlMission) && !StringUtils.isEmpty(topic)) {
             kafkaTemplate.send(topic, etlMission);
@@ -62,7 +62,7 @@ public class KafkaProducer {
      */
     public void batchProduce(String topic, Collection<EtlMission> etlMissions) {
         if (!CollectionUtils.isEmpty(etlMissions) && !StringUtils.isEmpty(topic)) {
-            logger.info("批量生产mission，当前共生产%d条mission", etlMissions.size());
+            logger.info("批量生产mission，当前共生产{}条mission", etlMissions.size());
             etlMissions.stream().forEach((etlMission ->
                     kafkaTemplate.send(topic, etlMission)));
             logger.info("批量生产mission结束");
